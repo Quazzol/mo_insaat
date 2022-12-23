@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Backend.Datas.Enums;
 
 namespace Backend.Models;
 
-[Table("contact")]
-public class ContactModel
+[Table("company_info")]
+public class CompanyInfoModel
 {
     [Key]
     [Required]
@@ -13,7 +14,8 @@ public class ContactModel
     [Required]
     public string? LanguageCode { get; set; }
 
-    public string? Content { get; set; }
+    [Required]
+    public CompanyInfoType Type { get; set; }
 
-    public int SortOrder { get; set; }
+    public string? Content { get; set; }
 }

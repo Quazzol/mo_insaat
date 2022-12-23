@@ -67,7 +67,7 @@ public class Check
     {
         if (!value.Equals(Guid.Empty))
         {
-            throw new ArgumentException("Guid value must be empty", valueName);
+            throw new ArgumentException("Guid value must not be empty", valueName);
         }
     }
 

@@ -7,7 +7,7 @@ public interface IImageLibraryRepository
 {
     public Task<ImageLibraryModel?> GetImage(Guid id);
     public Task<IEnumerable<ImageLibraryModel?>> GetImages(Guid contentId);
-    public Task<IEnumerable<ImageLibraryModel?>> GetCoverImages();
+    public Task<IEnumerable<ImageLibraryModel?>> GetCoverImages(int count);
     public Task<string?> InsertImage(ImageInsertDTO image, string name);
     public Task<string?> UpdateImage(ImageUpdateDTO image);
     public Task<bool> DeleteImage(Guid id);

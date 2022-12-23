@@ -1,4 +1,5 @@
 using AutoMapper;
+using Backend.Datas.Enums;
 using Backend.DTOs;
 using Backend.DTOs.Request;
 using Backend.DTOs.Response;
@@ -23,9 +24,14 @@ public class ContentService : IContentService
         return _mapper.Map<ContentDTO>(await _repository.Get(id));
     }
 
-    public async Task<IEnumerable<ContentDTO?>> GetAll(Guid? contentTypeId)
+    public async Task<IEnumerable<ContentDTO?>> GetAll(Guid? contentHeaderId)
     {
-        return _mapper.Map<IEnumerable<ContentDTO>>(await _repository.GetAll(contentTypeId));
+        return _mapper.Map<IEnumerable<ContentDTO>>(await _repository.GetAll(contentHeaderId));
+    }
+
+    public async Task<IEnumerable<ContentDTO?>> GetAll(string languageCode, ContentType type)
+    {
+        return _mapper.Map<IEnumerable<ContentDTO>>(await _repository.GetAll(languageCode, type));
     }
 
     public async Task<IEnumerable<MenuItem?>> GetAllTitle(string languageCode)
@@ -52,11 +58,6 @@ public class ContentService : IContentService
     public async Task<IEnumerable<ContentDTO>> GetVisibleOnMainPage(string languageCode)
     {
         return _mapper.Map<IEnumerable<ContentDTO>>(await _repository.GetVisibleOnMainPage(languageCode));
-    }
-
-    private MenuItem? FindHeaderMenu(IEnumerable<MenuItem> menuItems, Guid? headerId)
-    {
-        return menuItems.First(q => q.Title?.Id == headerId);
     }
 
     public async Task<ContentDTO?> Insert(ContentInsertDTO content)

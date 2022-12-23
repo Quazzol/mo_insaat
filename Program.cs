@@ -15,6 +15,7 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
+var corsOriginsPolicy = "CorsOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -22,19 +23,32 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: corsOriginsPolicy,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:3000");
+                      });
+});
+
 builder.Services.AddSingleton<IDateTimeProvider, DefaultDateTimeProvider>(x => new DefaultDateTimeProvider(() => DateTime.Now));
 builder.Services.AddSingleton<IAuthorizationHandler, OnlyAdminAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationHandler, AtLeastModeratorAuthorizationHandler>();
 
 builder.Services.AddScoped<IImageLibraryRepository, ImageLibraryRepository>();
 builder.Services.AddScoped<IContentRepository, ContentRepository>();
-builder.Services.AddScoped<IContactRepository, ContactRepository>();
+builder.Services.AddScoped<ICompanyInfoRepository, CompanyInfoRepository>();
+builder.Services.AddScoped<IFaqRepository, FaqRepository>();
+builder.Services.AddScoped<ILegalRepository, LegalRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IImageLibraryService, ImageLibraryService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IContentService, ContentService>();
-builder.Services.AddScoped<IContactService, ContactService>();
+builder.Services.AddScoped<ICompanyInfoService, CompanyInfoService>();
+builder.Services.AddScoped<IFaqService, FaqService>();
+builder.Services.AddScoped<ILegalService, LegalService>();
 builder.Services.AddScoped<ITokenProviderService, TokenProviderService>();
 builder.Services.AddScoped<IUserContext, UserContext>();
 builder.Services.AddTransient<IUserService, UserService>();
@@ -114,6 +128,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(corsOriginsPolicy);
 
 app.UseJwtAuthentication();
 app.UseConcurrentUserAuthorization();

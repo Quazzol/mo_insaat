@@ -29,6 +29,12 @@ public class ImageLibraryController : ControllerBase
         return Ok(await _service.GetImages(contentId));
     }
 
+    [HttpGet("get-cover-images")]
+    public async Task<IActionResult> GetCoverImages(int count = int.MaxValue)
+    {
+        return Ok(await _service.GetCoverImages(count));
+    }
+
     [Authorize(Policy = Policies.AtLeastModerators)]
     [HttpPost("save-image")]
     public async Task<IActionResult> SaveImage(ImageInsertDTO image)

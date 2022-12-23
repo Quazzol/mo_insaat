@@ -1,5 +1,4 @@
 using Backend.Authorization;
-using Backend.Datas.Enums;
 using Backend.DTOs.Request;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -9,11 +8,11 @@ namespace Backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ContentController : ControllerBase
+public class FaqController : ControllerBase
 {
-    private readonly IContentService _service;
+    private readonly IFaqService _service;
 
-    public ContentController(IContentService service)
+    public FaqController(IFaqService service)
     {
         _service = service;
     }
@@ -25,26 +24,14 @@ public class ContentController : ControllerBase
     }
 
     [HttpGet("get-all")]
-    public async Task<IActionResult> GetAll(Guid? contentTypeId)
+    public async Task<IActionResult> GetAll(string languageCode, int count = int.MaxValue)
     {
-        return Ok(await _service.GetAll(contentTypeId));
-    }
-
-    [HttpGet("get-all-by-type")]
-    public async Task<IActionResult> GetAllByType(string languageCode, ContentType type)
-    {
-        return Ok(await _service.GetAll(languageCode, type));
-    }
-
-    [HttpGet("get-all-title")]
-    public async Task<IActionResult> GetAllTitle(string languageCode)
-    {
-        return Ok(await _service.GetAllTitle(languageCode));
+        return Ok(await _service.GetAll(languageCode, count));
     }
 
     [Authorize(Policy = Policies.AtLeastModerators)]
     [HttpPost("insert")]
-    public async Task<IActionResult> Insert(ContentInsertDTO content)
+    public async Task<IActionResult> Insert(FaqInsertDTO content)
     {
         if (!ModelState.IsValid)
             return ValidationProblem(ModelState);
@@ -53,7 +40,7 @@ public class ContentController : ControllerBase
 
     [Authorize(Policy = Policies.AtLeastModerators)]
     [HttpPost("update")]
-    public async Task<IActionResult> Update(ContentUpdateDTO content)
+    public async Task<IActionResult> Update(FaqUpdateDTO content)
     {
         if (!ModelState.IsValid)
             return ValidationProblem(ModelState);

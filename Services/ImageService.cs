@@ -32,7 +32,7 @@ public class ImageService : IImageService
             await image.CopyToAsync(stream);
         }
 
-        return (name, image.Length);
+        return (Path.Combine(ImageFolder, path, name), image.Length);
     }
 
     public bool DeleteImage(string path, string name)

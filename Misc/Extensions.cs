@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace Backend.Misc;
 
@@ -53,7 +52,7 @@ public static class EnumExtensions
 
     public static string Linkify(this string? str)
     {
-        if (str is null)
+        if (string.IsNullOrWhiteSpace(str))
             return string.Empty;
 
         // Replace Turkish characters with english equivalent
@@ -62,7 +61,7 @@ public static class EnumExtensions
             str = str.Replace(kvp.Key, kvp.Value);
         }
 
-        // Replance leave only alpha numeric, space and dash characters
+        // Replace leave only alpha numeric, space and dash characters
         char[] arr = str.Where(c => (char.IsLetterOrDigit(c) ||
                              char.IsWhiteSpace(c) ||
                              c == '-')).ToArray();
@@ -70,7 +69,7 @@ public static class EnumExtensions
         str = new string(arr);
 
         // Trim and replace spaces with dashes
-        return str.ToLower().Trim().Replace(' ', '-');
+        return "/" + str.ToLower().Trim().Replace(' ', '-');
     }
 
     public static string Clearify(this string? str)
@@ -92,5 +91,15 @@ public static class EnumExtensions
         str = new string(arr);
 
         return str.ToLower().Trim().Replace(' ', '_');
+    }
+
+    public static bool IsEmpty(this string? str)
+    {
+        return string.IsNullOrWhiteSpace(str);
+    }
+
+    public static bool IsEmpty(this Guid? guid)
+    {
+        return guid == null && guid == Guid.Empty;
     }
 }

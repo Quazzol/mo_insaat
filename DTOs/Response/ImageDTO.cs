@@ -6,5 +6,6 @@ public class ImageDTO
     public string? Name { get; set; }
     public int SortOrder { get; set; }
     public bool IsCover { get; set; }
+    public string? ContentName { get; set; }
     public Guid ContentId { get; set; }
 }

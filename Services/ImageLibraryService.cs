@@ -31,9 +31,9 @@ public class ImageLibraryService : IImageLibraryService
         return _mapper.Map<IEnumerable<ImageDTO?>>(await _repository.GetImages(contentId));
     }
 
-    public async Task<IEnumerable<ImageDTO?>> GetCoverImages()
+    public async Task<IEnumerable<ImageDTO?>> GetCoverImages(int count)
     {
-        return _mapper.Map<IEnumerable<ImageDTO?>>(await _repository.GetCoverImages());
+        return _mapper.Map<IEnumerable<ImageDTO?>>(await _repository.GetCoverImages(count));
     }
 
     public async Task<string?> InsertImage(ImageInsertDTO image)

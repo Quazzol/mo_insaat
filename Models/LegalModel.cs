@@ -4,8 +4,8 @@ using Backend.Datas.Enums;
 
 namespace Backend.Models;
 
-[Table("content")]
-public class ContentModel
+[Table("legal")]
+public class LegalModel
 {
     [Key]
     [Required]
@@ -15,24 +15,13 @@ public class ContentModel
     public string? LanguageCode { get; set; }
 
     [Required]
+    public LegalType Type { get; set; }
+
+    [Required]
     public string? Name { get; set; }
 
     [Required]
     public string? Link { get; set; }
 
-    public ContentType Type { get; set; }
-
     public string? Content { get; set; }
-
-    public bool ImageLibrary { get; set; }
-
-    public bool VisibleOnMain { get; set; }
-
-    public int SortOrder { get; set; }
-
-    public bool IsFixed { get; set; }
-
-    public Guid? HeaderContentId { get; set; }
-
-    public ICollection<ImageLibraryModel>? Images { get; set; }
 }

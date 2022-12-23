@@ -1,5 +1,6 @@
 using AutoMapper;
 using Backend.Connection;
+using Backend.Datas.Enums;
 using Backend.DTOs.Request;
 using Backend.DTOs.Response;
 using Backend.Misc;
@@ -30,6 +31,11 @@ public class ContentRepository : IContentRepository
         return await _context.Contents!.Where(q => q.HeaderContentId == headerContentId).ToListAsync();
     }
 
+    public async Task<IEnumerable<ContentModel?>> GetAll(string languageCode, ContentType type)
+    {
+        return await _context.Contents!.Where(q => q.LanguageCode == languageCode && q.Type == type).ToListAsync();
+    }
+
     public async Task<IEnumerable<ContentTitleDTO?>> GetAllTitle(string languageCode)
     {
         return await _context.Contents!.Where(q => q.LanguageCode == languageCode).Select(q =>
@@ -54,10 +60,19 @@ public class ContentRepository : IContentRepository
         if (existingModel != null)
             return existingModel;
 
+        var link = string.Empty;
+        if (!content.HeaderContentId.IsEmpty())
+        {
+            var headerModel = await _context.Contents!.FirstOrDefaultAsync(q => q.Id == content.HeaderContentId);
+            if (headerModel == null)
+                throw new ArgumentException("No content found with the given ContentHeaderID");
+            link = headerModel.Link;
+        }
+
         var lastSortOrder = await _context.Contents!.Where(q => q.HeaderContentId == content.HeaderContentId).OrderByDescending(q => q.SortOrder).FirstOrDefaultAsync();
         var model = _mapper.Map<ContentModel>(content);
         model.Id = Guid.NewGuid();
-        model.Link = content.Name!.Linkify();
+        model.Link = string.Format("{0}{1}", link, content.Name!.Linkify());
         model.SortOrder = lastSortOrder is null ? 1 : lastSortOrder.SortOrder + 1;
 
         await _context.Contents!.AddAsync(model);
@@ -72,13 +87,18 @@ public class ContentRepository : IContentRepository
         if (existingModel is null)
             return null;
 
-        existingModel.LanguageCode = content.LanguageCode;
-        existingModel.Name = content.Name;
-        existingModel.Link = content.Name!.Linkify();
-        existingModel.Content = content.Content;
-        existingModel.ImageLibrary = content.ImageLibrary;
-        existingModel.VisibleOnMain = content.VisibleOnMain;
-        existingModel.SortOrder = content.SortOrder;
+        if (!existingModel.IsFixed)
+        {
+            existingModel.Name = content.Name.IsEmpty() ? existingModel.Name : content.Name;
+            existingModel.Link = content.Name.IsEmpty() ? existingModel.Link : content.Name!.Linkify();
+            existingModel.ImageLibrary = content.ImageLibrary == null ? existingModel.ImageLibrary : (bool)content.ImageLibrary;
+            existingModel.VisibleOnMain = content.VisibleOnMain == null ? existingModel.VisibleOnMain : (bool)content.VisibleOnMain;
+            existingModel.IsFixed = content.IsFixed == null ? existingModel.IsFixed : (bool)content.IsFixed;
+            existingModel.SortOrder = content.SortOrder == 0 ? existingModel.SortOrder : content.SortOrder;
+        }
+
+        existingModel.LanguageCode = content.LanguageCode.IsEmpty() ? existingModel.LanguageCode : content.LanguageCode;
+        existingModel.Content = content.Content.IsEmpty() ? existingModel.Content : content.Content;
 
         await _context.SaveChangesAsync();
 
@@ -88,8 +108,9 @@ public class ContentRepository : IContentRepository
     public async Task Delete(Guid id)
     {
         var content = await _context.Contents!.FirstOrDefaultAsync(q => q.Id == id);
-        if (content is null)
+        if (content is null || content.IsFixed)
             return;
+
         _context.Contents!.Remove(content);
         await _context.SaveChangesAsync();
     }

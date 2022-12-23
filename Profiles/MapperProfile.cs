@@ -10,13 +10,20 @@ public class MapperProfile : Profile
     public MapperProfile()
     {
         // Source -> Target
-        CreateMap<ContactModel, ContactDTO>();
+        CreateMap<CompanyInfoModel, CompanyInfoDTO>();
+        CreateMap<CompanyInfoInsertDTO, CompanyInfoModel>();
         CreateMap<ContentModel, ContentDTO>();
         CreateMap<ContentInsertDTO, ContentModel>();
         CreateMap<ContentTitleInsertDTO, ContentModel>();
         CreateMap<ContentModel, ContentTitleDTO>();
         CreateMap<ContentTitleInsertDTO, ContentInsertDTO>();
+        CreateMap<ContentTitleUpdateDTO, ContentUpdateDTO>();
+        CreateMap<ContentUpdateDTO, ContentTitleDTO>();
         CreateMap<ContentDTO, ContentTitleDTO>();
-        CreateMap<ImageLibraryModel, ImageDTO>();
+        CreateMap<FaqModel, FaqDTO>();
+        CreateMap<FaqInsertDTO, FaqModel>();
+        CreateMap<LegalModel, LegalDTO>();
+        CreateMap<LegalInsertDTO, LegalModel>();
+        CreateMap<ImageLibraryModel, ImageDTO>().ForMember(dest => dest.ContentName, source => source.MapFrom(i => i.Content!.Name));
     }
 }

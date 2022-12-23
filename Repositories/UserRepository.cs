@@ -2,9 +2,9 @@ using Backend.Connection;
 using Backend.Datas.Enums;
 using Backend.DTOs;
 using Backend.DTOs.Request;
+using Backend.Misc;
 using Backend.Models;
 using Backend.Repositories.Interfaces;
-using NebimV3.MobileStore.WebApi.Encryption;
 
 namespace Backend.Repositories;
 
@@ -117,9 +117,7 @@ public class UserRepository : IUserRepository
 
         bool IsValidPassword(string? password)
         {
-            if (password is null || password.Equals(string.Empty))
-                return false;
-            return password.Length > 8;
+            return !password.IsEmpty() && password!.Length > 8;
         }
     }
 

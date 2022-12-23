@@ -11,14 +11,18 @@ namespace Backend.Controllers;
 public class AdminController : ControllerBase
 {
     private readonly IContentService _contentService;
-    private readonly IContactService _contactService;
+    private readonly ICompanyInfoService _companyInfoService;
     private readonly IImageLibraryService _imageService;
+    private readonly IFaqService _faqService;
+    private readonly ILegalService _legalService;
 
-    public AdminController(IContentService contentService, IContactService contactService, IImageLibraryService imageService)
+    public AdminController(IContentService contentService, ICompanyInfoService companyInfoService, IImageLibraryService imageService, IFaqService faqService, ILegalService legalService)
     {
         _contentService = contentService;
-        _contactService = contactService;
+        _companyInfoService = companyInfoService;
         _imageService = imageService;
+        _faqService = faqService;
+        _legalService = legalService;
     }
 
     #region MenuItem
@@ -73,28 +77,20 @@ public class AdminController : ControllerBase
 
     #endregion
 
-    #region Contact
+    #region CompanyInfo
 
     [Authorize(Policy = Policies.AtLeastModerators)]
-    [HttpPost("insert-contact")]
-    public async Task<IActionResult> InsertContact(ContactInsertDTO dto)
+    [HttpPost("insert-company-info")]
+    public async Task<IActionResult> InsertCompanyInfo(CompanyInfoInsertDTO dto)
     {
-        return Ok(await _contactService.Insert(dto));
+        return Ok(await _companyInfoService.Insert(dto));
     }
 
     [Authorize(Policy = Policies.AtLeastModerators)]
-    [HttpPost("update-contact")]
-    public async Task<IActionResult> UpdateContact(ContactUpdateDTO dto)
+    [HttpPost("update-company-info")]
+    public async Task<IActionResult> UpdateCompanyInfo(CompanyInfoUpdateDTO dto)
     {
-        return Ok(await _contactService.Update(dto));
-    }
-
-    [Authorize(Policy = Policies.OnlyAdmins)]
-    [HttpGet("delete-contact")]
-    public async Task<IActionResult> DeleteContact(Guid id)
-    {
-        await _contactService.Delete(id);
-        return Ok();
+        return Ok(await _companyInfoService.Update(dto));
     }
 
     #endregion
@@ -137,4 +133,53 @@ public class AdminController : ControllerBase
     }
 
     #endregion
+
+    #region Faq
+
+    [Authorize(Policy = Policies.AtLeastModerators)]
+    [HttpPost("insert-faq")]
+    public async Task<IActionResult> InsertFaq(FaqInsertDTO dto)
+    {
+        if (!ModelState.IsValid)
+            return ValidationProblem(ModelState);
+        return Ok(await _faqService.Insert(dto));
+    }
+
+    [Authorize(Policy = Policies.AtLeastModerators)]
+    [HttpPost("update-faq")]
+    public async Task<IActionResult> UpdateFaq(FaqUpdateDTO dto)
+    {
+        if (!ModelState.IsValid)
+            return ValidationProblem(ModelState);
+        return Ok(await _faqService.Update(dto));
+    }
+
+    [Authorize(Policy = Policies.OnlyAdmins)]
+    [HttpGet("delete-faq")]
+    public async Task<IActionResult> DeleteFaq(Guid id)
+    {
+        await _faqService.Delete(id);
+        return Ok();
+    }
+
+    #endregion
+
+    #region Legal
+
+    [Authorize(Policy = Policies.AtLeastModerators)]
+    [HttpPost("insert-legal")]
+    public async Task<IActionResult> InsertLegal(LegalInsertDTO dto)
+    {
+        return Ok(await _legalService.Insert(dto));
+    }
+
+    [Authorize(Policy = Policies.AtLeastModerators)]
+    [HttpPost("update-legal")]
+    public async Task<IActionResult> UpdateLegal(LegalUpdateDTO dto)
+    {
+        return Ok(await _legalService.Update(dto));
+    }
+
+    #endregion
+
 }

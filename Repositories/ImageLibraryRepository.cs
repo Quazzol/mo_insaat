@@ -1,6 +1,5 @@
 using Backend.Connection;
 using Backend.DTOs.Request;
-using Backend.Misc;
 using Backend.Models;
 using Backend.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -18,18 +17,18 @@ public class ImageLibraryRepository : IImageLibraryRepository
 
     public async Task<ImageLibraryModel?> GetImage(Guid id)
     {
-        return await _context.Images!.FirstOrDefaultAsync(q => q.Id == id);
+        return await _context.Images!.Include(q => q.Content).FirstOrDefaultAsync(q => q.Id == id);
     }
 
     public async Task<IEnumerable<ImageLibraryModel?>> GetImages(Guid contentId)
     {
-        var images = await _context.Images!.Where(q => q.ContentId == contentId).ToListAsync();
+        var images = await _context.Images!.Where(q => q.ContentId == contentId).Include(q => q.Content).ToListAsync();
         return images is null ? new List<ImageLibraryModel>() : images;
     }
 
-    public async Task<IEnumerable<ImageLibraryModel?>> GetCoverImages()
+    public async Task<IEnumerable<ImageLibraryModel?>> GetCoverImages(int count)
     {
-        var images = await _context.Images!.Where(q => q.IsCover).ToListAsync();
+        var images = await _context.Images!.Where(q => q.IsCover).Include(q => q.Content).Take(count).ToListAsync();
         return images is null ? new List<ImageLibraryModel>() : images;
     }
 
@@ -50,10 +49,7 @@ public class ImageLibraryRepository : IImageLibraryRepository
         if (existingImage is null)
             return string.Empty;
 
-        if (image.SortOrder > 0)
-        {
-            existingImage.SortOrder = image.SortOrder;
-        }
+        existingImage.SortOrder = image.SortOrder == 0 ? existingImage.SortOrder : image.SortOrder;
         existingImage.IsCover = image.IsCover;
 
         await _context.SaveChangesAsync();
