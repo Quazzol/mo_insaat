@@ -17,5 +17,8 @@ public class CompanyInfoModel
     [Required]
     public CompanyInfoType Type { get; set; }
 
+    [Required]
+    public string? Name { get; set; }
+
     public string? Content { get; set; }
 }

@@ -30,21 +30,21 @@ public class UIController : ControllerBase
     }
 
     [HttpGet("content")]
-    public async Task<IActionResult> GetContentPage(Guid contentId)
+    public async Task<IActionResult> GetContent(Guid contentId)
     {
         return Ok(await _contentService.Get(contentId));
     }
 
-    [HttpGet("content-by-type")]
-    public async Task<IActionResult> GetContent(string languageCode, ContentType type)
+    [HttpGet("content-all")]
+    public async Task<IActionResult> GetContentAll(Guid contentHeaderId)
     {
-        return Ok(await _contentService.GetAll(languageCode, type));
+        return Ok(await _contentService.GetAll(contentHeaderId));
     }
 
-    [HttpGet("main-page")]
-    public async Task<IActionResult> GetMainPage(string languageCode)
+    [HttpGet("visible-on-index")]
+    public async Task<IActionResult> GetVisibleOnIndex(string languageCode)
     {
-        return Ok(await _contentService.GetVisibleOnMainPage(languageCode));
+        return Ok(await _contentService.GetVisibleOnIndex(languageCode));
     }
 
     [HttpGet("images")]

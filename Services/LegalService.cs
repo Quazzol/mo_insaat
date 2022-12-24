@@ -27,11 +27,6 @@ public class LegalService : ILegalService
         return _mapper.Map<IEnumerable<LegalDTO>>(await _repository.GetAll(languageCode));
     }
 
-    public async Task<LegalDTO?> Insert(LegalInsertDTO content)
-    {
-        return _mapper.Map<LegalDTO>(await _repository.Insert(content));
-    }
-
     public async Task<LegalDTO?> Update(LegalUpdateDTO content)
     {
         return _mapper.Map<LegalDTO>(await _repository.Update(content));

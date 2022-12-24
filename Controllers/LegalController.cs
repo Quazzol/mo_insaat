@@ -30,15 +30,6 @@ public class LegalController : ControllerBase
     }
 
     [Authorize(Policy = Policies.AtLeastModerators)]
-    [HttpPost("insert")]
-    public async Task<IActionResult> Insert(LegalInsertDTO content)
-    {
-        if (!ModelState.IsValid)
-            return ValidationProblem(ModelState);
-        return Ok(await _service.Insert(content));
-    }
-
-    [Authorize(Policy = Policies.AtLeastModerators)]
     [HttpPost("update")]
     public async Task<IActionResult> Update(LegalUpdateDTO content)
     {

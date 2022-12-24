@@ -7,12 +7,7 @@ public class LegalInsertDTO
 {
     [Required]
     public string? LanguageCode { get; set; }
-
-    [Required]
-    public LegalType Type { get; set; }
-
     [Required]
     public string? Name { get; set; }
-
     public string? Content { get; set; }
 }

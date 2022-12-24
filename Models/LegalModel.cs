@@ -15,9 +15,6 @@ public class LegalModel
     public string? LanguageCode { get; set; }
 
     [Required]
-    public LegalType Type { get; set; }
-
-    [Required]
     public string? Name { get; set; }
 
     [Required]

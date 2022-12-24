@@ -80,13 +80,6 @@ public class AdminController : ControllerBase
     #region CompanyInfo
 
     [Authorize(Policy = Policies.AtLeastModerators)]
-    [HttpPost("insert-company-info")]
-    public async Task<IActionResult> InsertCompanyInfo(CompanyInfoInsertDTO dto)
-    {
-        return Ok(await _companyInfoService.Insert(dto));
-    }
-
-    [Authorize(Policy = Policies.AtLeastModerators)]
     [HttpPost("update-company-info")]
     public async Task<IActionResult> UpdateCompanyInfo(CompanyInfoUpdateDTO dto)
     {
@@ -165,13 +158,6 @@ public class AdminController : ControllerBase
     #endregion
 
     #region Legal
-
-    [Authorize(Policy = Policies.AtLeastModerators)]
-    [HttpPost("insert-legal")]
-    public async Task<IActionResult> InsertLegal(LegalInsertDTO dto)
-    {
-        return Ok(await _legalService.Insert(dto));
-    }
 
     [Authorize(Policy = Policies.AtLeastModerators)]
     [HttpPost("update-legal")]

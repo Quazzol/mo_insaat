@@ -11,7 +11,6 @@ public class MapperProfile : Profile
     {
         // Source -> Target
         CreateMap<CompanyInfoModel, CompanyInfoDTO>();
-        CreateMap<CompanyInfoInsertDTO, CompanyInfoModel>();
         CreateMap<ContentModel, ContentDTO>();
         CreateMap<ContentInsertDTO, ContentModel>();
         CreateMap<ContentTitleInsertDTO, ContentModel>();

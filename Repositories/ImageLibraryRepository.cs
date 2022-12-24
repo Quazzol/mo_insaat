@@ -22,13 +22,13 @@ public class ImageLibraryRepository : IImageLibraryRepository
 
     public async Task<IEnumerable<ImageLibraryModel?>> GetImages(Guid contentId)
     {
-        var images = await _context.Images!.Where(q => q.ContentId == contentId).Include(q => q.Content).ToListAsync();
+        var images = await _context.Images!.Where(q => q.ContentId == contentId).OrderBy(q => q.SortOrder).Include(q => q.Content).ToListAsync();
         return images is null ? new List<ImageLibraryModel>() : images;
     }
 
     public async Task<IEnumerable<ImageLibraryModel?>> GetCoverImages(int count)
     {
-        var images = await _context.Images!.Where(q => q.IsCover).Include(q => q.Content).Take(count).ToListAsync();
+        var images = await _context.Images!.Where(q => q.IsCover).OrderBy(q => q.SortOrder).Include(q => q.Content).Take(count).ToListAsync();
         return images is null ? new List<ImageLibraryModel>() : images;
     }
 
@@ -57,6 +57,15 @@ public class ImageLibraryRepository : IImageLibraryRepository
         return existingImage.Name;
     }
 
+    public async Task<bool> DeleteImage(Guid id)
+    {
+        var model = _context.Images!.FirstOrDefault(q => q.Id == id);
+        if (model is null)
+            return true;
+        _context.Images!.Remove(model);
+        return await _context.SaveChangesAsync() > 0;
+    }
+
     private async Task CreateAndAddModel(string? name, int sortOrder, bool isCover, Guid contentId)
     {
         var model = new ImageLibraryModel()
@@ -69,15 +78,6 @@ public class ImageLibraryRepository : IImageLibraryRepository
         };
 
         await _context.Images!.AddAsync(model);
-    }
-
-    public async Task<bool> DeleteImage(Guid id)
-    {
-        var model = _context.Images!.FirstOrDefault(q => q.Id == id);
-        if (model is null)
-            return true;
-        _context.Images!.Remove(model);
-        return await _context.SaveChangesAsync() > 0;
     }
 
 }

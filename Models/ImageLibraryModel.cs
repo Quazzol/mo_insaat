@@ -19,6 +19,6 @@ public class ImageLibraryModel
 
     public Guid ContentId { get; set; }
 
-    [ForeignKey("ContentId")]
+    [ForeignKey(nameof(ContentId))]
     public ContentModel? Content { get; set; }
 }

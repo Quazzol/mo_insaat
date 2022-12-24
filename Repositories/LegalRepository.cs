@@ -1,7 +1,5 @@
 using AutoMapper;
 using Backend.Connection;
-using Backend.Datas.Enums;
-using Backend.DTOs;
 using Backend.DTOs.Request;
 using Backend.Misc;
 using Backend.Models;
@@ -28,22 +26,7 @@ public class LegalRepository : ILegalRepository
 
     public async Task<IEnumerable<LegalModel?>> GetAll(string languageCode)
     {
-        return await _context.Legals!.Where(q => q.LanguageCode == languageCode).OrderBy(q => q.Type).ToListAsync();
-    }
-
-    public async Task<LegalModel?> Insert(LegalInsertDTO info)
-    {
-        var existingModel = await _context.Legals!.FirstOrDefaultAsync(q => q.Type == info.Type);
-        if (existingModel != null)
-            return existingModel;
-
-        var model = _mapper.Map<LegalModel>(info);
-        model.Id = Guid.NewGuid();
-
-        await _context.Legals!.AddAsync(model);
-        await _context.SaveChangesAsync();
-
-        return model;
+        return await _context.Legals!.Where(q => q.LanguageCode == languageCode).OrderBy(q => q.Name).ToListAsync();
     }
 
     public async Task<LegalModel?> Update(LegalUpdateDTO info)
@@ -53,7 +36,6 @@ public class LegalRepository : ILegalRepository
             return null;
 
         existingModel.LanguageCode = info.LanguageCode.IsEmpty() ? existingModel.LanguageCode : info.LanguageCode;
-        existingModel.Type = info.Type == LegalType.None ? existingModel.Type : info.Type;
         existingModel.Name = info.Name.IsEmpty() ? existingModel.Name : info.Name;
         existingModel.Link = info.Name.IsEmpty() ? existingModel.Link : info.Name.Linkify();
         existingModel.Content = info.Content.IsEmpty() ? existingModel.Content : info.Content;

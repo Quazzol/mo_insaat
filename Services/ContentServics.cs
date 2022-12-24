@@ -29,11 +29,6 @@ public class ContentService : IContentService
         return _mapper.Map<IEnumerable<ContentDTO>>(await _repository.GetAll(contentHeaderId));
     }
 
-    public async Task<IEnumerable<ContentDTO?>> GetAll(string languageCode, ContentType type)
-    {
-        return _mapper.Map<IEnumerable<ContentDTO>>(await _repository.GetAll(languageCode, type));
-    }
-
     public async Task<IEnumerable<MenuItem?>> GetAllTitle(string languageCode)
     {
         var menuItems = (await _repository.GetAllTitle(languageCode)).Select(q => new MenuItem() { Title = q }).OrderBy(q => q.Title.SortOrder).ToList();
@@ -55,9 +50,9 @@ public class ContentService : IContentService
         return menuItems.Where(q => !idsToRemove.Contains(q.Title.Id));
     }
 
-    public async Task<IEnumerable<ContentDTO>> GetVisibleOnMainPage(string languageCode)
+    public async Task<IEnumerable<ContentDTO>> GetVisibleOnIndex(string languageCode)
     {
-        return _mapper.Map<IEnumerable<ContentDTO>>(await _repository.GetVisibleOnMainPage(languageCode));
+        return _mapper.Map<IEnumerable<ContentDTO>>(await _repository.GetVisibleOnIndex(languageCode));
     }
 
     public async Task<ContentDTO?> Insert(ContentInsertDTO content)

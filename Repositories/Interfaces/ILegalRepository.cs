@@ -8,6 +8,5 @@ public interface ILegalRepository
 {
     public Task<LegalModel?> Get(Guid id);
     public Task<IEnumerable<LegalModel?>> GetAll(string languageCode);
-    public Task<LegalModel?> Insert(LegalInsertDTO content);
     public Task<LegalModel?> Update(LegalUpdateDTO content);
 }

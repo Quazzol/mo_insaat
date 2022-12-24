@@ -23,22 +23,28 @@ public class ContentRepository : IContentRepository
 
     public async Task<ContentModel?> Get(Guid id)
     {
-        return await _context.Contents!.FirstOrDefaultAsync(q => q.Id == id);
+        return await _context.Contents!
+            .Include(q => q.Images)
+            .Include(q => q.HeaderContent)
+            .FirstOrDefaultAsync(q => q.Id == id);
     }
 
     public async Task<IEnumerable<ContentModel?>> GetAll(Guid? headerContentId)
     {
-        return await _context.Contents!.Where(q => q.HeaderContentId == headerContentId).ToListAsync();
-    }
-
-    public async Task<IEnumerable<ContentModel?>> GetAll(string languageCode, ContentType type)
-    {
-        return await _context.Contents!.Where(q => q.LanguageCode == languageCode && q.Type == type).ToListAsync();
+        return await _context.Contents!
+            .Where(q => q.HeaderContentId == headerContentId)
+            .Include(q => q.Images)
+            .Include(q => q.HeaderContent)
+            .OrderBy(q => q.SortOrder)
+            .ToListAsync();
     }
 
     public async Task<IEnumerable<ContentTitleDTO?>> GetAllTitle(string languageCode)
     {
-        return await _context.Contents!.Where(q => q.LanguageCode == languageCode).Select(q =>
+        return await _context.Contents!
+            .Where(q => q.LanguageCode == languageCode && !q.IsSubContent && !q.IsImageLibrary)
+            .OrderBy(q => q.SortOrder)
+            .Select(q =>
         new ContentTitleDTO()
         {
             Id = q.Id,
@@ -49,9 +55,14 @@ public class ContentRepository : IContentRepository
         }).ToListAsync();
     }
 
-    public async Task<IEnumerable<ContentModel>> GetVisibleOnMainPage(string languageCode)
+    public async Task<IEnumerable<ContentModel>> GetVisibleOnIndex(string languageCode)
     {
-        return await _context.Contents!.Where(q => q.VisibleOnMain && q.LanguageCode == languageCode && q.Content != null).ToListAsync();
+        return await _context.Contents!
+            .Where(q => q.IsVisibleOnIndex && q.LanguageCode == languageCode)
+            .Include(q => q.Images)
+            .Include(q => q.HeaderContent)
+            .OrderBy(q => q.SortOrder)
+            .ToListAsync();
     }
 
     public async Task<ContentModel?> Insert(ContentInsertDTO content)
@@ -91,10 +102,12 @@ public class ContentRepository : IContentRepository
         {
             existingModel.Name = content.Name.IsEmpty() ? existingModel.Name : content.Name;
             existingModel.Link = content.Name.IsEmpty() ? existingModel.Link : content.Name!.Linkify();
-            existingModel.ImageLibrary = content.ImageLibrary == null ? existingModel.ImageLibrary : (bool)content.ImageLibrary;
-            existingModel.VisibleOnMain = content.VisibleOnMain == null ? existingModel.VisibleOnMain : (bool)content.VisibleOnMain;
-            existingModel.IsFixed = content.IsFixed == null ? existingModel.IsFixed : (bool)content.IsFixed;
+            existingModel.IsSubContent = content.IsSubContent == null ? existingModel.IsSubContent : (bool)content.IsSubContent;
+            existingModel.IsImageLibrary = content.IsImageLibrary == null ? existingModel.IsImageLibrary : (bool)content.IsImageLibrary;
+            existingModel.IsVisibleOnIndex = content.IsVisibleOnIndex == null ? existingModel.IsVisibleOnIndex : (bool)content.IsVisibleOnIndex;
+            existingModel.IsCompleted = content.IsCompleted == null ? existingModel.IsCompleted : (bool)content.IsCompleted;
             existingModel.SortOrder = content.SortOrder == 0 ? existingModel.SortOrder : content.SortOrder;
+            existingModel.IsCompleted = content.IsCompleted == null ? existingModel.IsCompleted : (bool)content.IsCompleted;
         }
 
         existingModel.LanguageCode = content.LanguageCode.IsEmpty() ? existingModel.LanguageCode : content.LanguageCode;
@@ -110,7 +123,6 @@ public class ContentRepository : IContentRepository
         var content = await _context.Contents!.FirstOrDefaultAsync(q => q.Id == id);
         if (content is null || content.IsFixed)
             return;
-
         _context.Contents!.Remove(content);
         await _context.SaveChangesAsync();
     }

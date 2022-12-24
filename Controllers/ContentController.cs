@@ -30,16 +30,16 @@ public class ContentController : ControllerBase
         return Ok(await _service.GetAll(contentTypeId));
     }
 
-    [HttpGet("get-all-by-type")]
-    public async Task<IActionResult> GetAllByType(string languageCode, ContentType type)
-    {
-        return Ok(await _service.GetAll(languageCode, type));
-    }
-
     [HttpGet("get-all-title")]
     public async Task<IActionResult> GetAllTitle(string languageCode)
     {
         return Ok(await _service.GetAllTitle(languageCode));
+    }
+
+    [HttpGet("get-visible-on-index")]
+    public async Task<IActionResult> GetVisibleOnIndex(string languageCode)
+    {
+        return Ok(await _service.GetVisibleOnIndex(languageCode));
     }
 
     [Authorize(Policy = Policies.AtLeastModerators)]

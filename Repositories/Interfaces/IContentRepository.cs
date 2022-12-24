@@ -1,4 +1,3 @@
-using Backend.Datas.Enums;
 using Backend.DTOs.Request;
 using Backend.DTOs.Response;
 using Backend.Models;
@@ -9,9 +8,8 @@ public interface IContentRepository
 {
     public Task<ContentModel?> Get(Guid id);
     public Task<IEnumerable<ContentModel?>> GetAll(Guid? contentTypeId);
-    public Task<IEnumerable<ContentModel?>> GetAll(string languageCode, ContentType type);
     public Task<IEnumerable<ContentTitleDTO?>> GetAllTitle(string languageCode);
-    public Task<IEnumerable<ContentModel>> GetVisibleOnMainPage(string languageCode);
+    public Task<IEnumerable<ContentModel>> GetVisibleOnIndex(string languageCode);
     public Task<ContentModel?> Insert(ContentInsertDTO content);
     public Task<ContentModel?> Update(ContentUpdateDTO content);
     public Task Delete(Guid id);

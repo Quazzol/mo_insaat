@@ -27,11 +27,6 @@ public class CompanyInfoService : ICompanyInfoService
         return _mapper.Map<IEnumerable<CompanyInfoDTO>>(await _repository.GetAll(languageCode));
     }
 
-    public async Task<CompanyInfoDTO?> Insert(CompanyInfoInsertDTO content)
-    {
-        return _mapper.Map<CompanyInfoDTO>(await _repository.Insert(content));
-    }
-
     public async Task<CompanyInfoDTO?> Update(CompanyInfoUpdateDTO content)
     {
         return _mapper.Map<CompanyInfoDTO>(await _repository.Update(content));

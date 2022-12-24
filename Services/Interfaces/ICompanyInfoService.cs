@@ -7,6 +7,5 @@ public interface ICompanyInfoService
 {
     public Task<CompanyInfoDTO?> Get(Guid id);
     public Task<IEnumerable<CompanyInfoDTO?>> GetAll(string languageCode);
-    public Task<CompanyInfoDTO?> Insert(CompanyInfoInsertDTO content);
     public Task<CompanyInfoDTO?> Update(CompanyInfoUpdateDTO content);
 }

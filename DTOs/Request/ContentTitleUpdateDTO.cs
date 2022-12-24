@@ -9,6 +9,5 @@ public class ContentTitleUpdateDTO
     public string? LanguageCode { get; set; }
     public string? Name { get; set; }
     public int SortOrder { get; set; }
-    public bool? IsFixed { get; set; }
     public Guid? HeaderContentId { get; set; }
 }

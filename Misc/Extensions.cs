@@ -100,6 +100,6 @@ public static class EnumExtensions
 
     public static bool IsEmpty(this Guid? guid)
     {
-        return guid == null && guid == Guid.Empty;
+        return guid == null || guid == Guid.Empty;
     }
 }
