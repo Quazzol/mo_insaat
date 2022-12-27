@@ -23,6 +23,8 @@ public class MapperProfile : Profile
         CreateMap<FaqInsertDTO, FaqModel>();
         CreateMap<LegalModel, LegalDTO>();
         CreateMap<LegalInsertDTO, LegalModel>();
-        CreateMap<ImageLibraryModel, ImageDTO>().ForMember(dest => dest.ContentName, source => source.MapFrom(i => i.Content!.Name));
+        CreateMap<ImageLibraryModel, ImageDTO>()
+            .ForMember(dest => dest.ContentName, source => source.MapFrom(i => i.Content!.Name))
+            .ForMember(dest => dest.ContentLink, source => source.MapFrom(i => i.Content!.Link));
     }
 }

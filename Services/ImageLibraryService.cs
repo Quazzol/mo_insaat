@@ -10,14 +10,12 @@ public class ImageLibraryService : IImageLibraryService
 {
     private readonly IImageService _imageService;
     private readonly IImageLibraryRepository _repository;
-    private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
 
-    public ImageLibraryService(IConfiguration configuration, IImageService imageService, IImageLibraryRepository repository, IMapper mapper)
+    public ImageLibraryService(IImageService imageService, IImageLibraryRepository repository, IMapper mapper)
     {
         _imageService = imageService;
         _repository = repository;
-        _configuration = configuration;
         _mapper = mapper;
     }
 

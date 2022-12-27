@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Backend.Controllers;
 
 [ApiController]
+[Consumes("application/json")]
+[Produces("application/json")]
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {

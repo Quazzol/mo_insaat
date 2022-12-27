@@ -22,6 +22,17 @@ public class UserService : IUserService
     public UserSignInResultDTO SignIn(UserSignInDTO user)
     {
         var result = _repository.SignIn(user);
+
+        if (result.resultType != SignInResultType.Success)
+        {
+            return new UserSignInResultDTO()
+            {
+                Token = string.Empty,
+                ValidTo = DateTime.Now,
+                ResultType = result.resultType
+            };
+        }
+
         var token = _tokenService.CreateToken(result.model);
 
         return new UserSignInResultDTO()
