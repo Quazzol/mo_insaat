@@ -1,7 +1,10 @@
 using Backend.Authorization;
+using Backend.Datas.Enums;
 using Backend.DTOs.Request;
+using Backend.Misc;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers;
@@ -10,20 +13,127 @@ namespace Backend.Controllers;
 [Route("api/[controller]")]
 public class AdminController : ControllerBase
 {
+    private readonly IUserService _userService;
     private readonly IContentService _contentService;
     private readonly ICompanyInfoService _companyInfoService;
     private readonly IImageLibraryService _imageService;
     private readonly IFaqService _faqService;
     private readonly ILegalService _legalService;
 
-    public AdminController(IContentService contentService, ICompanyInfoService companyInfoService, IImageLibraryService imageService, IFaqService faqService, ILegalService legalService)
+    public AdminController(IUserService userService,
+                        IContentService contentService,
+                        ICompanyInfoService companyInfoService,
+                        IImageLibraryService imageService,
+                        IFaqService faqService,
+                        ILegalService legalService)
     {
+        _userService = userService;
         _contentService = contentService;
         _companyInfoService = companyInfoService;
         _imageService = imageService;
         _faqService = faqService;
         _legalService = legalService;
     }
+
+    #region User
+
+    [HttpPost("sign-in")]
+    public IActionResult SignIn(UserSignInDTO user)
+    {
+        if (!ModelState.IsValid)
+            return ValidationProblem(ModelState);
+
+        var result = _userService.SignIn(user);
+
+        if (result.ResultType != SignInResultType.Success)
+        {
+            return SignInFailed(result.ResultType, $"SignIn failed for user {user.Username}!");
+        }
+
+        return Ok(result);
+
+        IActionResult SignInFailed(SignInResultType reason, string message)
+        {
+            return Unauthorized(new ProblemDetails
+            {
+                Type = "signin-failed",
+                Detail = message,
+                Status = 401,
+                Title = "SignIn Failed",
+                Extensions = { { "reason", reason }, { "reasonDescription", reason.GetDescription() } },
+                Instance = HttpContext.Request.GetDisplayUrl()
+            });
+        }
+    }
+
+    [Authorize(Policy = Policies.OnlyAdmins)]
+    [HttpPost("sign-up")]
+    public IActionResult SignUp(UserSignUpDTO user)
+    {
+        if (!ModelState.IsValid)
+            return ValidationProblem(ModelState);
+
+        var result = _userService.SignUp(user);
+        if (result.ResultType != SignUpResultType.Success)
+        {
+            return SignUpFailed(result.ResultType, $"SignUp failed for user {user.Username}!");
+        }
+
+        return Ok(result);
+
+        IActionResult SignUpFailed(SignUpResultType reason, string message)
+        {
+            return Unauthorized(new ProblemDetails
+            {
+                Type = "signup-failed",
+                Detail = message,
+                Status = 401,
+                Title = "SignUp Failed",
+                Extensions = { { "reason", reason }, { "reasonDescription", reason.GetDescription() } },
+                Instance = HttpContext.Request.GetDisplayUrl()
+            });
+        }
+    }
+
+    [Authorize(Policy = Policies.OnlyAdmins)]
+    [HttpPost("update-user")]
+    public IActionResult UpdateUser(UserUpdateDTO user)
+    {
+        if (!ModelState.IsValid)
+            return ValidationProblem(ModelState);
+
+        var result = _userService.UpdateUser(user);
+        if (result != UserUpdateResult.Success)
+        {
+            return UpdateFailed(result, result.GetDescription());
+        }
+
+        return Ok();
+
+        IActionResult UpdateFailed(UserUpdateResult reason, string message)
+        {
+            return Unauthorized(new ProblemDetails
+            {
+                Type = "update-failed",
+                Detail = message,
+                Status = 401,
+                Title = "User Updated Failed",
+                Extensions = { { "reason", reason }, { "reasonDescription", reason.GetDescription() } },
+                Instance = HttpContext.Request.GetDisplayUrl()
+            });
+        }
+    }
+
+    [HttpPost("confirm-user")]
+    public IActionResult ConfirmUser(UserUpdateDTO user)
+    {
+        if (!ModelState.IsValid)
+            return ValidationProblem(ModelState);
+
+        return Ok(_userService.ValidatePendingUser(user));
+    }
+
+    #endregion
 
     #region MenuItem
 
