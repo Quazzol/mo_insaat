@@ -24,10 +24,16 @@ public class ContentController : ControllerBase
         return Ok(await _service.Get(id));
     }
 
-    [HttpGet("get-all")]
+    [HttpGet("get-content-by-header")]
     public async Task<IActionResult> GetAll(Guid? contentTypeId)
     {
         return Ok(await _service.GetAll(contentTypeId));
+    }
+
+    [HttpGet("get-content-all")]
+    public async Task<IActionResult> GetAll(string languageCode, int page, int count)
+    {
+        return Ok(await _service.GetAll(languageCode, page, count));
     }
 
     [HttpGet("get-all-title")]

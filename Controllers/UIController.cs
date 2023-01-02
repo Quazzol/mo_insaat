@@ -35,10 +35,16 @@ public class UIController : ControllerBase
         return Ok(await _contentService.Get(contentId));
     }
 
-    [HttpGet("content-all")]
+    [HttpGet("content-by-header")]
     public async Task<IActionResult> GetContentAll(Guid contentHeaderId)
     {
         return Ok(await _contentService.GetAll(contentHeaderId));
+    }
+
+    [HttpGet("content-all")]
+    public async Task<IActionResult> GetContentAll(string languageCode, int page = 0, int count = int.MaxValue)
+    {
+        return Ok(await _contentService.GetAll(languageCode, page, count));
     }
 
     [HttpGet("visible-on-index")]
@@ -59,6 +65,12 @@ public class UIController : ControllerBase
         return Ok(await _imageLibraryService.GetCoverImages(count));
     }
 
+    [HttpGet("faq")]
+    public async Task<IActionResult> GetFaq(Guid id)
+    {
+        return Ok(await _faqService.Get(id));
+    }
+
     [HttpGet("faqs")]
     public async Task<IActionResult> GetFaqs(string languageCode, int count = int.MaxValue)
     {
@@ -72,7 +84,13 @@ public class UIController : ControllerBase
     }
 
     [HttpGet("legal")]
-    public async Task<IActionResult> GetLegal(string languageCode)
+    public async Task<IActionResult> GetLegal(Guid id)
+    {
+        return Ok(await _legalService.Get(id));
+    }
+
+    [HttpGet("legals")]
+    public async Task<IActionResult> GetLegals(string languageCode)
     {
         return Ok(await _legalService.GetAll(languageCode));
     }

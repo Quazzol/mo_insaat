@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Backend.Datas.Enums;
 
 namespace Backend.DTOs.Request;
 

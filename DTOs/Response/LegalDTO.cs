@@ -1,5 +1,3 @@
-using Backend.Datas.Enums;
-
 namespace Backend.DTOs.Response;
 
 public class LegalDTO

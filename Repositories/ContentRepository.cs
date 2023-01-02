@@ -39,6 +39,19 @@ public class ContentRepository : IContentRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<ContentModel?>> GetAll(string languageCode, int page, int count)
+    {
+        return await _context.Contents!
+            .Where(q => q.LanguageCode == languageCode && q.HeaderContentId != null)
+            .Include(q => q.Images)
+            .Include(q => q.HeaderContent)
+            .OrderBy(q => q.HeaderContentId)
+            .ThenBy(q => q.SortOrder)
+            .Skip(page * count)
+            .Take(count)
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<ContentTitleDTO?>> GetAllTitle(string languageCode)
     {
         return await _context.Contents!

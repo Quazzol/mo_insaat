@@ -8,6 +8,7 @@ public interface IContentRepository
 {
     public Task<ContentModel?> Get(Guid id);
     public Task<IEnumerable<ContentModel?>> GetAll(Guid? contentTypeId);
+    public Task<IEnumerable<ContentModel?>> GetAll(string languageCode, int page, int count);
     public Task<IEnumerable<ContentTitleDTO?>> GetAllTitle(string languageCode);
     public Task<IEnumerable<ContentModel>> GetVisibleOnIndex(string languageCode);
     public Task<ContentModel?> Insert(ContentInsertDTO content);

@@ -64,6 +64,9 @@ public class AppDbContext : DbContext
     private IEnumerable<LegalModel> CreateLegalModels()
     {
         var legalModels = new List<LegalModel>();
+        legalModels.Add(CreateLegalModel("Çerezler"));
+        legalModels.Add(CreateLegalModel("Kullanım Koşulları"));
+        legalModels.Add(CreateLegalModel("KVKK"));
 
         return legalModels;
     }

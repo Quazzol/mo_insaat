@@ -29,6 +29,11 @@ public class ContentService : IContentService
         return _mapper.Map<IEnumerable<ContentDTO>>(await _repository.GetAll(contentHeaderId));
     }
 
+    public async Task<IEnumerable<ContentDTO?>> GetAll(string languageCode, int page, int count)
+    {
+        return _mapper.Map<IEnumerable<ContentDTO>>(await _repository.GetAll(languageCode, page, count));
+    }
+
     public async Task<IEnumerable<MenuItem?>> GetAllTitle(string languageCode)
     {
         var menuItems = (await _repository.GetAllTitle(languageCode)).Select(q => new MenuItem() { Title = q }).OrderBy(q => q.Title.SortOrder).ToList();
