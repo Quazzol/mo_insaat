@@ -66,6 +66,15 @@ public class ImageLibraryRepository : IImageLibraryRepository
         return await _context.SaveChangesAsync() > 0;
     }
 
+    public async Task<bool> DeleteImagesByContentId(Guid contentId)
+    {
+        var images = await _context.Images!.Where(q => q.ContentId == contentId).ToListAsync();
+        if (images is null)
+            return true;
+        _context.Images!.RemoveRange(images);
+        return await _context.SaveChangesAsync() > 0;
+    }
+
     private async Task CreateAndAddModel(string? name, int sortOrder, bool isCover, Guid contentId)
     {
         var model = new ImageLibraryModel()

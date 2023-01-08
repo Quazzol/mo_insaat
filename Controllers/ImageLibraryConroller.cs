@@ -59,4 +59,11 @@ public class ImageLibraryController : ControllerBase
     {
         return Ok(await _service.DeleteImages(ids));
     }
+
+    [Authorize(Policy = Policies.OnlyAdmins)]
+    [HttpPost("delete-images-by-content-id")]
+    public async Task<IActionResult> DeleteImagesByContentId(Guid id)
+    {
+        return Ok(await _service.DeleteImagesByContentId(id));
+    }
 }

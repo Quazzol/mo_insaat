@@ -11,4 +11,5 @@ public interface IImageLibraryRepository
     public Task<string?> InsertImage(ImageInsertDTO image, string name);
     public Task<string?> UpdateImage(ImageUpdateDTO image);
     public Task<bool> DeleteImage(Guid id);
+    public Task<bool> DeleteImagesByContentId(Guid contentId);
 }

@@ -12,4 +12,5 @@ public interface IImageLibraryService
     public Task<IEnumerable<string?>> InsertMultipleImages(ImagesInsertDTO images);
     public Task<string?> UpdateImage(ImageUpdateDTO image);
     public Task<bool> DeleteImages(IEnumerable<Guid> ids);
+    public Task<bool> DeleteImagesByContentId(Guid contentId);
 }

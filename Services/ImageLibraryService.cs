@@ -71,9 +71,15 @@ public class ImageLibraryService : IImageLibraryService
             if (image is null || image.Name is null)
                 continue;
 
-            _imageService.DeleteImage(image.ContentId.ToString(), image.Name);
+            _imageService.DeleteImage(image.Name);
             await _repository.DeleteImage(id);
         }
         return true;
+    }
+
+    public async Task<bool> DeleteImagesByContentId(Guid contentId)
+    {
+        _imageService.DeleteFolder(contentId.ToString());
+        return await _repository.DeleteImagesByContentId(contentId);
     }
 }

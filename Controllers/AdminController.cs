@@ -231,8 +231,14 @@ public class AdminController : ControllerBase
     [HttpGet("delete-images")]
     public async Task<IActionResult> DeleteImage([FromQuery(Name = "id")] IEnumerable<Guid> ids)
     {
-        await _imageService.DeleteImages(ids);
-        return Ok();
+        return Ok(await _imageService.DeleteImages(ids));
+    }
+
+    [Authorize(Policy = Policies.OnlyAdmins)]
+    [HttpPost("delete-images-by-content-id")]
+    public async Task<IActionResult> DeleteImagesByContentId(Guid id)
+    {
+        return Ok(await _imageService.DeleteImagesByContentId(id));
     }
 
     #endregion

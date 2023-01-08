@@ -37,10 +37,16 @@ internal class TokenProviderService : ITokenProviderService
                 expires: _dateTimeProvider.UtcNow.AddDays(90),
                 signingCredentials: new SigningCredentials(GetSecurityKey(), SecurityAlgorithms.HmacSha256)
             )
+            /* Change payload to minimum required*/
             {
                 Payload =
                 {
-                    ["User"] = user
+                    ["User"] = new {
+                        Id = user.Id,
+                        Username = user.Username,
+                        Email = user.Email,
+                        Type = user.Type
+                    }
                 }
             };
 

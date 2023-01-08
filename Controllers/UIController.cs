@@ -29,6 +29,12 @@ public class UIController : ControllerBase
         return Ok(await _contentService.GetAllTitle(languageCode));
     }
 
+    [HttpGet("content-types")]
+    public async Task<IActionResult> GetContentTypes(string languageCode)
+    {
+        return Ok(await _contentService.GetContentTypes(languageCode));
+    }
+
     [HttpGet("content")]
     public async Task<IActionResult> GetContent(Guid contentId)
     {

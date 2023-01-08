@@ -1,5 +1,4 @@
 using AutoMapper;
-using Backend.Datas.Enums;
 using Backend.DTOs;
 using Backend.DTOs.Request;
 using Backend.DTOs.Response;
@@ -11,11 +10,13 @@ namespace Backend.Services;
 public class ContentService : IContentService
 {
     private readonly IContentRepository _repository;
+    private readonly IImageLibraryService _imageService;
     private readonly IMapper _mapper;
 
-    public ContentService(IContentRepository repository, IMapper mapper)
+    public ContentService(IContentRepository repository, IImageLibraryService imageService, IMapper mapper)
     {
         _repository = repository;
+        _imageService = imageService;
         _mapper = mapper;
     }
 
@@ -55,6 +56,12 @@ public class ContentService : IContentService
         return menuItems.Where(q => !idsToRemove.Contains(q.Title.Id));
     }
 
+    public async Task<IEnumerable<ContentTitleDTO?>> GetContentTypes(string languageCode)
+    {
+        var menuItems = await _repository.GetAllTitle(languageCode);
+        return (menuItems.Where(q => q?.HeaderContentId == null));
+    }
+
     public async Task<IEnumerable<ContentDTO>> GetVisibleOnIndex(string languageCode)
     {
         return _mapper.Map<IEnumerable<ContentDTO>>(await _repository.GetVisibleOnIndex(languageCode));
@@ -80,9 +87,12 @@ public class ContentService : IContentService
         return _mapper.Map<ContentTitleDTO>(await _repository.Update(_mapper.Map<ContentUpdateDTO>(title)));
     }
 
-    public async Task Delete(Guid id)
+    public async Task<bool> Delete(Guid id)
     {
-        await _repository.Delete(id);
+        var content = await _repository.Get(id);
+        if (content?.Images != null || content!.Images!.Count > 0)
+            await _imageService.DeleteImagesByContentId(id);
+        return (await _repository.Delete(id));
     }
 
 }

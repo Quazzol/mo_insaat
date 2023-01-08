@@ -35,13 +35,22 @@ public class ImageService : IImageService
         return (Path.Combine(ImageFolder, path, name), image.Length);
     }
 
-    public bool DeleteImage(string path, string name)
+    public bool DeleteImage(string name)
     {
-        var filePath = Path.Combine(_environment.WebRootPath, ImageFolder, path.Clearify(), name);
+        var filePath = Path.Combine(_environment.WebRootPath, name);
 
         if (!File.Exists(filePath))
             return false;
         File.Delete(filePath);
+        return true;
+    }
+
+    public bool DeleteFolder(string name)
+    {
+        var folderPath = Path.Combine(_environment.WebRootPath, ImageFolder, name.Clearify());
+        if (!Directory.Exists(folderPath))
+            return false;
+        Directory.Delete(folderPath, true);
         return true;
     }
 

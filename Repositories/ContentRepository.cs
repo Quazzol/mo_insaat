@@ -131,13 +131,14 @@ public class ContentRepository : IContentRepository
         return existingModel;
     }
 
-    public async Task Delete(Guid id)
+    public async Task<bool> Delete(Guid id)
     {
         var content = await _context.Contents!.FirstOrDefaultAsync(q => q.Id == id);
         if (content is null || content.IsFixed)
-            return;
+            return false;
         _context.Contents!.Remove(content);
         await _context.SaveChangesAsync();
+        return true;
     }
 
 }

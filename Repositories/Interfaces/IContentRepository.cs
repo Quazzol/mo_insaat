@@ -13,5 +13,5 @@ public interface IContentRepository
     public Task<IEnumerable<ContentModel>> GetVisibleOnIndex(string languageCode);
     public Task<ContentModel?> Insert(ContentInsertDTO content);
     public Task<ContentModel?> Update(ContentUpdateDTO content);
-    public Task Delete(Guid id);
+    public Task<bool> Delete(Guid id);
 }

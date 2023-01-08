@@ -42,6 +42,12 @@ public class ContentController : ControllerBase
         return Ok(await _service.GetAllTitle(languageCode));
     }
 
+    [HttpGet("get-content-types")]
+    public async Task<IActionResult> GetContentTypes(string languageCode)
+    {
+        return Ok(await _service.GetContentTypes(languageCode));
+    }
+
     [HttpGet("get-visible-on-index")]
     public async Task<IActionResult> GetVisibleOnIndex(string languageCode)
     {

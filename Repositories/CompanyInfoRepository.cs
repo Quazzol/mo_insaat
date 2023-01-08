@@ -36,7 +36,7 @@ public class CompanyInfoRepository : ICompanyInfoRepository
             return null;
 
         existingModel.LanguageCode = info.LanguageCode.IsEmpty() ? existingModel.LanguageCode : info.LanguageCode;
-        existingModel.Content = info.Content.IsEmpty() ? existingModel.Content : info.Content;
+        existingModel.Content = info.Content;
 
         await _context.SaveChangesAsync();
 
